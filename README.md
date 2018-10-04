@@ -24,7 +24,7 @@ NuGet Source: https://www.myget.org/F/dsharpplus-nightly/api/v3/index.json
 - [x] Compiling working version for HC
 
 ## Developer discord
-HC Discord. https://discord.gg/354TGs2
+HC Discord. https://discord.gg/TYaxJz
 
 ## Docker
 [Docker Community Store](https://store.docker.com/community/images/lulalaby/hccontrol)
