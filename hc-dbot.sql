@@ -1,5 +1,5 @@
 -- --------------------------------------------------------
--- Host:                         127.0.0.1
+-- Host:                         docker.latias.eu
 -- Server Version:               10.3.9-MariaDB-1:10.3.9+maria~bionic - mariadb.org binary distribution
 -- Server Betriebssystem:        debian-linux-gnu
 -- HeidiSQL Version:             9.5.0.5196
@@ -13,6 +13,7 @@
 
 
 -- Exportiere Datenbank Struktur für hc-dbot
+DROP DATABASE IF EXISTS `hc-dbot`;
 CREATE DATABASE IF NOT EXISTS `hc-dbot` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `hc-dbot`;
 
@@ -29,10 +30,7 @@ CREATE TABLE IF NOT EXISTS `guilds` (
   UNIQUE KEY `guildID` (`guildID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Discord guilds';
 
--- Exportiere Daten aus Tabelle hc-dbot.guilds: ~0 rows (ungefähr)
-/*!40000 ALTER TABLE `guilds` DISABLE KEYS */;
-/*!40000 ALTER TABLE `guilds` ENABLE KEYS */;
-
+-- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle hc-dbot.guilds.admins
 DROP TABLE IF EXISTS `guilds.admins`;
 CREATE TABLE IF NOT EXISTS `guilds.admins` (
@@ -51,10 +49,7 @@ CREATE TABLE IF NOT EXISTS `guilds.admins` (
   CONSTRAINT `GuildAdmins` FOREIGN KEY (`guildID`) REFERENCES `guilds` (`guildID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Guild Managers/Admins -> Guild Permission "Administrator"';
 
--- Exportiere Daten aus Tabelle hc-dbot.guilds.admins: ~0 rows (ungefähr)
-/*!40000 ALTER TABLE `guilds.admins` DISABLE KEYS */;
-/*!40000 ALTER TABLE `guilds.admins` ENABLE KEYS */;
-
+-- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle hc-dbot.guilds.config
 DROP TABLE IF EXISTS `guilds.config`;
 CREATE TABLE IF NOT EXISTS `guilds.config` (
@@ -72,10 +67,7 @@ CREATE TABLE IF NOT EXISTS `guilds.config` (
   CONSTRAINT `GuildConfig` FOREIGN KEY (`guildID`) REFERENCES `guilds` (`guildID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Discord guild config';
 
--- Exportiere Daten aus Tabelle hc-dbot.guilds.config: ~0 rows (ungefähr)
-/*!40000 ALTER TABLE `guilds.config` DISABLE KEYS */;
-/*!40000 ALTER TABLE `guilds.config` ENABLE KEYS */;
-
+-- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle hc-dbot.guilds.emotes
 DROP TABLE IF EXISTS `guilds.emotes`;
 CREATE TABLE IF NOT EXISTS `guilds.emotes` (
@@ -92,10 +84,7 @@ CREATE TABLE IF NOT EXISTS `guilds.emotes` (
   CONSTRAINT `guildEmotes` FOREIGN KEY (`guildID`) REFERENCES `guilds` (`guildID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='All Custom Guild Emotes';
 
--- Exportiere Daten aus Tabelle hc-dbot.guilds.emotes: ~0 rows (ungefähr)
-/*!40000 ALTER TABLE `guilds.emotes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `guilds.emotes` ENABLE KEYS */;
-
+-- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle hc-dbot.guilds.users
 DROP TABLE IF EXISTS `guilds.users`;
 CREATE TABLE IF NOT EXISTS `guilds.users` (
@@ -110,61 +99,51 @@ CREATE TABLE IF NOT EXISTS `guilds.users` (
   UNIQUE KEY `userID` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Guild Managers/Admins -> Guild Permission "Administrator"';
 
--- Exportiere Daten aus Tabelle hc-dbot.guilds.users: ~0 rows (ungefähr)
-/*!40000 ALTER TABLE `guilds.users` DISABLE KEYS */;
-/*!40000 ALTER TABLE `guilds.users` ENABLE KEYS */;
-
+-- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle hc-dbot.modules.config
-DROP TABLE IF EXISTS `modules.config`
+DROP TABLE IF EXISTS `modules.config`;
 CREATE TABLE IF NOT EXISTS `modules.config` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `guildID` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `ID` int(20) NOT NULL AUTO_INCREMENT,
+  `guildID` bigint(20) unsigned NOT NULL,
   `adminModule` tinyint(4) unsigned NOT NULL DEFAULT 0,
   `greetModule` tinyint(4) unsigned NOT NULL DEFAULT 0,
   `birthdayModule` tinyint(4) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`),
   UNIQUE KEY `guildID` (`guildID`),
-  CONSTRAINT `guildModuleConfig` FOREIGN KEY (`guildID`) REFERENCES `guilds` (`guildID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Guild module config';
+  CONSTRAINT `GuildModuleConfig` FOREIGN KEY (`guildID`) REFERENCES `guilds` (`guildID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Discord guild module config';
 
--- Exportiere Daten aus Tabelle hc-dbot.modules.config: ~3 rows (ungefähr)
-/*!40000 ALTER TABLE `modules.config` DISABLE KEYS */;
-/*!40000 ALTER TABLE `modules.config` ENABLE KEYS */;
-
+-- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle hc-dbot.modules.greet
 DROP TABLE IF EXISTS `modules.greet`;
 CREATE TABLE IF NOT EXISTS `modules.greet` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ID` int(20) NOT NULL AUTO_INCREMENT,
   `guildID` bigint(20) unsigned NOT NULL COMMENT 'Corresponding Guild',
   `announceString` varchar(50) NOT NULL COMMENT 'That Text',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`),
   UNIQUE KEY `guildID` (`guildID`),
-  CONSTRAINT `guildModuleGreet` FOREIGN KEY (`guildID`) REFERENCES `guilds` (`guildID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  CONSTRAINT `GuildModuleGreet` FOREIGN KEY (`guildID`) REFERENCES `guilds` (`guildID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Discord guild greet module';
 
--- Exportiere Daten aus Tabelle hc-dbot.modules.greet: ~0 rows (ungefähr)
-/*!40000 ALTER TABLE `modules.greet` DISABLE KEYS */;
-/*!40000 ALTER TABLE `modules.greet` ENABLE KEYS */;
-
+-- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle hc-dbot.modules.roles
 DROP TABLE IF EXISTS `modules.roles`;
 CREATE TABLE IF NOT EXISTS `modules.roles` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ID` int(20) NOT NULL AUTO_INCREMENT,
   `guildID` bigint(20) unsigned NOT NULL COMMENT 'Corresponding Guild',
   `roleID` bigint(20) NOT NULL COMMENT 'Role',
   `msgID` bigint(20) NOT NULL COMMENT 'Msg',
   `reactID` bigint(20) NOT NULL COMMENT 'Needed React',
   `roleName` varchar(255) DEFAULT NULL COMMENT 'Name',
   PRIMARY KEY (`ID`),
-  UNIQUE KEY `ID` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  UNIQUE KEY `ID` (`ID`),
+  KEY `GuildModuleRoles` (`guildID`),
+  CONSTRAINT `GuildModuleRoles` FOREIGN KEY (`guildID`) REFERENCES `guilds` (`guildID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Discord guild role module';
 
--- Exportiere Daten aus Tabelle hc-dbot.modules.roles: ~0 rows (ungefähr)
-/*!40000 ALTER TABLE `modules.roles` DISABLE KEYS */;
-/*!40000 ALTER TABLE `modules.roles` ENABLE KEYS */;
-
+-- Daten Export vom Benutzer nicht ausgewählt
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
