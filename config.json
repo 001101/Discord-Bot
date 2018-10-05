@@ -1,4 +1,0 @@
-{
-  "Token": "YOUR_DISCORD_DEVELOPER_BOT_TOKEN",
-  "MysqlCon": "Server=localhost;Database=hc-dbot;Uid=CREATE_USER;Pwd=SET_OWN_ONE;SslMode=none"
-}
