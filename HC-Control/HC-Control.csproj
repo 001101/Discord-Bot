@@ -3,8 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RootNamespace>HC-Control</RootNamespace>
-    <StartupObject>HC-Control.Program</StartupObject>
+    <RootNamespace>HC_Control</RootNamespace>
+    <StartupObject>HC_Control.Program</StartupObject>
     <ApplicationIcon>hclogo.ico</ApplicationIcon>
     <SignAssembly>false</SignAssembly>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -18,6 +18,11 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseUrl>https://github.com/Human-Connection/Discord-Bot/blob/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl>https://www.dropbox.com/s/kw6byr3livo7dc3/hclogo.ico?dl=0</PackageIconUrl>
+    <Version>4.29.125</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn />
   </PropertyGroup>
 
   <ItemGroup>

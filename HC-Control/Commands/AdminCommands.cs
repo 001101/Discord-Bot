@@ -110,7 +110,7 @@ namespace HC_Control.Commands
                 await ctx.Guild.GetChannel(hcBotLogChannelId).SendMessageAsync($"Admin Module has been **disabled!**");
                 GuildsList[ctx.Guild.Id].ModuleConfig.AdminModule = false;
             }
-            var msqlCon = new MySqlConnection(HC_DBot.Program.config.MysqlCon);
+            var msqlCon = new MySqlConnection(Program.config.MysqlCon);
             await msqlCon.OpenAsync();
             try
             {
