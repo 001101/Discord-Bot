@@ -8,6 +8,7 @@ using System;
 using System.Net;
 using System.IO;
 using System.Linq;
+using Google.Cloud.Translation.V2;
 
 namespace HC_Control.Commands
 {
@@ -23,6 +24,15 @@ namespace HC_Control.Commands
             await Member.BanAsync(reason: Reason);
             await ctx.Message.DeleteAsync("Admin command hide");
             await LogAction(ctx.Guild, ctx.Message, "Ban", "Bans the given user", $"Baning {Member.Username} for reason {Reason}", DiscordColor.DarkRed);
+        }
+
+        [Command("translate"), RequirePrefixes("!"), RequireGuild()]
+        public async Task Translate(CommandContext ctx, string lang = "en", [RemainingText] string text = null)
+        {
+            Console.OutputEncoding = System.Text.Encoding.Unicode;
+            TranslationClient client = TranslationClient.Create();
+            var translation = await client.TranslateTextAsync(text, lang);
+            await ctx.RespondAsync($"The translation of your text from {translation.DetectedSourceLanguage} to {translation.TargetLanguage} is:\n```{translation.TranslatedText}```", false, null);
         }
 
         [Command("kick"), RequirePrefixes("!"), RequireUserPermissions(DSharpPlus.Permissions.KickMembers), RequireGuild()]

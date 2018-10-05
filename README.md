@@ -12,6 +12,12 @@ Developer Software: Visual Studio 2017
 
 NuGet Source: https://www.myget.org/F/dsharpplus-nightly/api/v3/index.json
 
+## Setup
+
+You need to copy config.sample.json to HC-Control/ as config.json and fill the data.
+Import the hc-dbot.sql into a mysql server
+DON'T PUSH YOUR config.json WITH CREDENTIALS!!
+
 ## Status
 - [x] Rewrite User Commands
 
@@ -27,7 +33,7 @@ NuGet Source: https://www.myget.org/F/dsharpplus-nightly/api/v3/index.json
 HC Discord. https://discord.gg/6ub73U3
 
 ## Docker
-[Docker Community Store](https://store.docker.com/community/images/lulalaby/hccontrol)
+Not uptodate [Docker Community Store](https://store.docker.com/community/images/lulalaby/hccontrol)
 
 
 Copyright 2018 Lala Sabathil & Speyd3r
