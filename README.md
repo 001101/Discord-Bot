@@ -15,7 +15,9 @@ NuGet Source: https://www.myget.org/F/dsharpplus-nightly/api/v3/index.json
 ## Setup
 
 You need to copy config.sample.json to HC-Control/ as config.json and fill the data.
+
 Import the hc-dbot.sql into a mysql server
+
 DON'T PUSH YOUR config.json WITH CREDENTIALS!!
 
 ## Status
