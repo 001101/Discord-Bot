@@ -9,9 +9,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using static HC_DBot.MainClasses.Bot;
+using static HC_Control.MainClasses.Bot;
 
-namespace HC_DBot.Commands
+namespace HC_Control.Commands
 {
     class UserCommands : BaseCommandModule
     {

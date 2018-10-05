@@ -4,12 +4,12 @@ using System.Linq;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using MySql.Data.MySqlClient;
-using static HC_DBot.MainClasses.Bot;
+using static HC_Control.MainClasses.Bot;
 using DSharpPlus.Entities;
 using System.Net;
 using System.IO;
 
-namespace HC_DBot.Config
+namespace HC_Control.Config
 {
     [Group("config")]
     class UserConfig : BaseCommandModule

@@ -2,14 +2,14 @@
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using System.Threading.Tasks;
-using static HC_DBot.MainClasses.Bot;
+using static HC_Control.MainClasses.Bot;
 using MySql.Data.MySqlClient;
 using System;
 using System.Net;
 using System.IO;
 using System.Linq;
 
-namespace HC_DBot.Commands
+namespace HC_Control.Commands
 {
     class AdminCommands : BaseCommandModule
     {

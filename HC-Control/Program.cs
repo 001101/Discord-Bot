@@ -1,8 +1,8 @@
-﻿using HC_DBot.MainClasses;
+﻿using HC_Control.MainClasses;
 using Newtonsoft.Json;
 using System.IO;
 
-namespace HC_DBot
+namespace HC_Control
 {
     class Program
     {
