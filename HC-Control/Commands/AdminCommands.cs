@@ -43,6 +43,18 @@ namespace HC_Control.Commands
             await LogAction(ctx.Guild, ctx.Message, "Kick", "Kicks the given user", $"Kicking {Member.Username} for reason {Reason}", DiscordColor.Red);
         }
 
+        [Command("rm"), RequirePrefixes("!"), RequireUserPermissions(DSharpPlus.Permissions.ManageMessages), RequireGuild()]
+        public async Task RemoveMessages(CommandContext ctx, int count)
+        {
+            var messages = await ctx.Channel.GetMessagesBeforeAsync(ctx.Message.Id, count);
+            foreach(var msg in messages)
+            {
+                await msg.DeleteAsync();
+            }
+            await ctx.Message.DeleteAsync("Admin command hide");
+            await LogAction(ctx.Guild, ctx.Message, "RemoveMessages", "Removes messages", $"Removing {count} from {ctx.Channel.Name}", DiscordColor.Red);
+        }
+
         [Command("welcometoggle"), Aliases("wt","welcomemessage"), RequirePrefixes("!"), RequireUserPermissions(DSharpPlus.Permissions.Administrator)]
         public async Task WelcomeMessage(CommandContext ctx)
         {
