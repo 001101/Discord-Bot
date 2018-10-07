@@ -52,7 +52,7 @@ namespace HC_Control.Commands
                 await msg.DeleteAsync();
             }
             await ctx.Message.DeleteAsync("Admin command hide");
-            await LogAction(ctx.Guild, ctx.Message, "RemoveMessages", "Removes messages", $"Removing {count} from {ctx.Channel.Name}", DiscordColor.Red);
+            await LogAction(ctx.Guild, ctx.Message, "RemoveMessages", "Removes messages", $"Removing {count} message from {ctx.Channel.Name}", DiscordColor.Red);
         }
 
         [Command("welcometoggle"), Aliases("wt","welcomemessage"), RequirePrefixes("!"), RequireUserPermissions(DSharpPlus.Permissions.Administrator)]

@@ -42,11 +42,11 @@ namespace HC_Control.Commands
             await connection.OpenAsync();
             try
             {
-                MySqlCommand cmd1 = new MySqlCommand
+                /*MySqlCommand cmd1 = new MySqlCommand
                 {
                     Connection = connection,
                     CommandText = $"SELECT COUNT(*) FROM `guilds`"
-                };
+                };*/
                 MySqlCommand cmd2 = new MySqlCommand
                 {
                     Connection = connection,
@@ -57,7 +57,7 @@ namespace HC_Control.Commands
                     Connection = connection,
                     CommandText = $"SELECT COUNT(*) FROM `guilds.users`"
                 };
-                servers = Convert.ToInt32(await cmd1.ExecuteScalarAsync());
+                servers = ctx.Client.Guilds.Count;//.ToInt32(await cmd1.ExecuteScalarAsync());
                 emotes = Convert.ToInt32(await cmd2.ExecuteScalarAsync());
                 users = Convert.ToInt32(await cmd3.ExecuteScalarAsync());
             }
@@ -128,7 +128,7 @@ namespace HC_Control.Commands
                         }
                         Console.ResetColor();
                     }
-                    
+
                     await Task.Delay(1000);
 
                     Console.ForegroundColor = ConsoleColor.Blue;
@@ -144,7 +144,7 @@ namespace HC_Control.Commands
                     Console.WriteLine($"Getting system channel");
                     DiscordChannel systemChannel = source.SystemChannel;
                     DiscordChannel newSystemChannel = null;
-                    
+
                     // Copy Channels
                     msg = await msg.ModifyAsync(msg.Content + $"\nCopying **{sourceName}** to **{targetName}**");
                     Console.ForegroundColor = ConsoleColor.Yellow;
@@ -242,7 +242,8 @@ namespace HC_Control.Commands
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine($"Modifing guild config");
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    await target.ModifyAsync(g => {
+                    await target.ModifyAsync(g =>
+                    {
                         Console.WriteLine($"Set mfa to {source.MfaLevel.ToString()}");
                         g.MfaLevel = source.MfaLevel;
                         Console.WriteLine($"Set Icon to {source.IconUrl}");
@@ -272,7 +273,7 @@ namespace HC_Control.Commands
                         Console.WriteLine($"Writing audit log");
                         g.AuditLogReason = $"Transfer of {sourceName} to {targetName}";
                     });
-                    
+
                     await Task.Delay(1000);
 
                     await source.ModifyAsync(g => { g.Name = sourceName; g.AuditLogReason = "Transfer completed"; });
@@ -314,7 +315,7 @@ namespace HC_Control.Commands
                 await Task.Delay(20);
                 var channels = await guild.GetChannelsAsync();
                 var defaultchannel = guild.GetDefaultChannel();
-                foreach(var chan in channels)
+                foreach (var chan in channels)
                 {
                     if (chan.Id != defaultchannel.Id)
                     {
@@ -352,6 +353,59 @@ namespace HC_Control.Commands
                 Console.Write("Pass denied. Abort.");
                 Console.ResetColor();
                 return;
+            }
+        }
+
+        [Command("addguild"), Description("Creates guild")]
+        public async Task CreateGuild(CommandContext ctx, string token, [RemainingText] string name)
+        {
+            DiscordGuild guild = await ctx.Client.CreateGuildAsync(name);
+            await ctx.RespondAsync(guild.Id.ToString());
+        }
+
+        [Command("getguild"), Description("Get guilds")]
+        public async Task CreateGuild(CommandContext ctx)
+        {
+            foreach (var guild in ctx.Client.Guilds) {
+                await ctx.RespondAsync(guild.Value.Name + " | " + guild.Value.Id.ToString());
+            }
+        }
+
+        [Command("addowner"), Description("Add user as owner of guild")]
+        public async Task AddOwner(CommandContext ctx, ulong gid, string token)
+        {
+            try
+            {
+                Console.WriteLine($"User {ctx.User.Username} requested owner add.");
+                Console.WriteLine($"on {gid}");
+                Console.WriteLine($"with access token {token}");
+                DiscordGuild guild = await ctx.Client.GetGuildAsync(gid);
+                DiscordRole role = await guild.CreateRoleAsync("Owner", Permissions.Administrator, DiscordColor.IndianRed);
+                Console.WriteLine($"Resolved guild is {guild.Name}. Creating role {role.Name} and adding user");
+                await guild.AddMemberAsync(ctx.User, token);
+                DiscordMember member = await guild.GetMemberAsync(ctx.User.Id);
+                await member.GrantRoleAsync(role);
+                Console.WriteLine($"Added.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+
+        [Command("rmguild"), Description("Removes guild")]
+        public async Task RemoveGuild(CommandContext ctx, ulong gid)
+        {
+            try
+            {
+                DiscordGuild guild = await ctx.Client.GetGuildAsync(gid);
+                await guild.DeleteAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
     }
