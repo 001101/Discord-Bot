@@ -41,8 +41,8 @@ namespace HC_Control.MainClasses
             Client.GuildMemberUpdated += MemberUpdate;
             Client.GuildMemberRemoved += MemberLeave;
             Client.GuildCreated += BotGuildAdded;
-            //Client.MessageReactionAdded += ReactAdd;
-            //Client.MessageReactionRemoved += ReactRemove;
+            Client.MessageReactionAdded += ReactAdd;
+            Client.MessageReactionRemoved += ReactRemove;
             CNext = Client.UseCommandsNext(new CommandsNextConfiguration {
                 StringPrefixes = new string[] { "$", "!", "%" },
                 EnableDefaultHelp = false
@@ -174,7 +174,8 @@ namespace HC_Control.MainClasses
                             GuildOwner = guild.Value.Owner.Id,
                             GuildMembers = new Dictionary<ulong, Members>(),
                             ChannelConfig = new ChannelConfig(),
-                            ModuleConfig = new ModuleConfig()
+                            ModuleConfig = new ModuleConfig(),
+                            RoleConfig = new Dictionary<ulong, RoleConfig>()
                         });
                     }
                     catch (Exception ex)
@@ -210,7 +211,7 @@ namespace HC_Control.MainClasses
                         var reader = await guildcmd.ExecuteReaderAsync();
                         while (await reader.ReadAsync())
                         {
-                            GuildsList[guild.Value.Id].ChannelConfig = (new ChannelConfig
+                            GuildsList[guild.Value.Id].ChannelConfig = new ChannelConfig
                             {
                                 RuleChannelID = Convert.ToUInt64(reader["ruleChannelId"]),
                                 InfoChannelID = Convert.ToUInt64(reader["infoChannelId"]),
@@ -218,7 +219,33 @@ namespace HC_Control.MainClasses
                                 LogChannelID = Convert.ToUInt64(reader["logChannelID"]),
                                 RoleID = Convert.ToUInt64(reader["roleID"]),
                                 CustomInfo = reader["customInfo"].ToString()
-                            });
+                            };
+                        }
+                        reader.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error: " + ex);
+                        Console.WriteLine(ex.StackTrace);
+                    } //Guild Role Config
+                    await connection.CloseAsync();
+                    await connection.OpenAsync();
+                    try
+                    {
+                        MySqlCommand guildcmd = new MySqlCommand
+                        {
+                            Connection = connection,
+                            CommandText = $"SELECT * FROM `modules.roles` WHERE `guildID` = {guild.Value.Id}"
+                        };
+                        var reader = await guildcmd.ExecuteReaderAsync();
+                        while (await reader.ReadAsync())
+                        {
+                            ulong reactID = Convert.ToUInt64(reader["reactID"]);
+                            GuildsList[guild.Value.Id].RoleConfig[reactID] = new RoleConfig()
+                            {
+                                MessageID = Convert.ToUInt64(reader["msgID"]),
+                                RoleID = Convert.ToUInt64(reader["roleID"])
+                            };
                         }
                         reader.Close();
                     }
@@ -227,6 +254,8 @@ namespace HC_Control.MainClasses
                         Console.WriteLine("Error: " + ex);
                         Console.WriteLine(ex.StackTrace);
                     } //Guild Channel Config Get
+                    await connection.CloseAsync();
+                    await connection.OpenAsync();
                     try
                     {
                         MySqlCommand guildcmd = new MySqlCommand
@@ -383,7 +412,8 @@ namespace HC_Control.MainClasses
                     GuildOwner = e.Guild.Owner.Id,
                     GuildMembers = new Dictionary<ulong, Members>(),
                     ChannelConfig = new ChannelConfig(),
-                    ModuleConfig = new ModuleConfig()
+                    ModuleConfig = new ModuleConfig(),
+                    RoleConfig = new Dictionary<ulong, RoleConfig>()
                 });
             }
             catch (Exception ex)
@@ -627,23 +657,43 @@ namespace HC_Control.MainClasses
             
         }
 
-        /*public async Task ReactAdd(MessageReactionAddEventArgs e)
+        public async Task ReactAdd(MessageReactionAddEventArgs e)
         {
-            if (e.Message.Id == rolemsg && e.Emoji.Id == hcRoleEmote)
+            try
             {
-                var GMember = await e.Channel.Guild.GetMemberAsync(e.User.Id);
-                await GMember.GrantRoleAsync(e.Channel.Guild.GetRole(testGroup), "Role react");
+                RoleConfig conf = GuildsList[e.Channel.GuildId].RoleConfig[e.Emoji.Id];
+                if (conf != null && conf.MessageID == e.Message.Id)
+                {
+                    DiscordRole role = e.Channel.Guild.GetRole(conf.RoleID);
+                    DiscordMember member = e.User as DiscordMember;
+                    await member.GrantRoleAsync(role);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
 
         public async Task ReactRemove(MessageReactionRemoveEventArgs e)
         {
-            if (e.Message.Id == rolemsg && e.Emoji.Id == hcRoleEmote)
+            try
             {
-                var GMember = await e.Channel.Guild.GetMemberAsync(e.User.Id);
-                await GMember.RevokeRoleAsync(e.Channel.Guild.GetRole(testGroup), "Role react");
+                RoleConfig conf = GuildsList[e.Channel.GuildId].RoleConfig[e.Emoji.Id];
+                if (conf != null && conf.MessageID == e.Message.Id)
+                {
+                    DiscordRole role = e.Channel.Guild.GetRole(conf.RoleID);
+                    DiscordMember member = e.User as DiscordMember;
+                    await member.RevokeRoleAsync(role);
+                }
             }
-        }*/
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
 
         public static async Task LogAction(DiscordGuild guild, DiscordMessage msg, string functionName, string description, string message, DiscordColor color)
         {
@@ -709,6 +759,13 @@ namespace HC_Control.MainClasses
         public Dictionary<ulong, Members> GuildMembers { get; set; }
         public ChannelConfig ChannelConfig { get; set; }
         public ModuleConfig ModuleConfig { get; set; }
+        public Dictionary<ulong, RoleConfig> RoleConfig { get; set; }
+    }
+
+    public class RoleConfig
+    {
+        public ulong MessageID { get; set; }
+        public ulong RoleID { get; set; }
     }
 
     public class Members
@@ -739,5 +796,28 @@ namespace HC_Control.MainClasses
     public class GreetMessages
     {
         public string AnnounceString { get; set; }
+    }
+
+    public class MultiDict<TKey, TValue>  // no (collection) base class
+    {
+        private Dictionary<TKey, List<TValue>> _data = new Dictionary<TKey, List<TValue>>();
+
+        public void Add(TKey k, TValue v)
+        {
+            // can be a optimized a little with TryGetValue, this is for clarity
+            if (_data.ContainsKey(k))
+                _data[k].Add(v);
+            else
+                _data.Add(k, new List<TValue>() { v });
+        }
+
+        public void Del(TKey k, TValue v)
+        {
+            // can be a optimized a little with TryGetValue, this is for clarity
+            if (_data.ContainsKey(k))
+                _data[k].Remove(v);
+        }
+
+        // more members
     }
 }
