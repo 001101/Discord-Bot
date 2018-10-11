@@ -652,7 +652,39 @@ namespace HC_Control.MainClasses
             }
             else if (e.RolesBefore != e.RolesAfter)
             {
-                //await LogActionNoMsg(e.Guild, "MemberUpdate", "Fired when guild members get updated", $"User {e.Member.Username} updated. Role change from {e.RolesBefore.ToString()} to {e.RolesAfter.ToString()}", DiscordColor.Green);
+                string type = "undefined";
+                DiscordRole changedRole;
+                if (e.RolesBefore.Count > e.RolesAfter.Count)
+                {
+                    type = "removed";
+                    foreach(DiscordRole role in e.RolesBefore)
+                    {
+                        if (e.RolesAfter.Contains(role))
+                        {
+                            // Continue
+                        }
+                        else
+                        {
+                            changedRole = role;
+                        }
+                    }
+                }
+                else if (e.RolesBefore.Count < e.RolesAfter.Count)
+                {
+                    type = "added";
+                    foreach (DiscordRole role in e.RolesAfter)
+                    {
+                        if (e.RolesBefore.Contains(role))
+                        {
+                            // Continue
+                        }
+                        else
+                        {
+                            changedRole = role;
+                        }
+                    }
+                }
+                await LogActionNoMsg(e.Guild, "MemberUpdate", "Fired when guild members get updated", $"User {e.Member.Username} updated. Role {changedRole.Name} {type}", DiscordColor.Green);
             }
             
         }
@@ -727,7 +759,7 @@ namespace HC_Control.MainClasses
             DiscordEmbedBuilder builder = new DiscordEmbedBuilder();
             builder.WithTitle("Changelog");
             builder.WithThumbnailUrl("https://media.discordapp.net/attachments/496417444613586984/496671867109769216/logthumbnail.png");
-            builder.WithDescription("Logged user/bot action");
+            builder.WithDescription("Logged user action");
             builder.AddField(name: "Function", value: $"{functionName}");
             builder.AddField(name: "Description", value: $"{description}");
             builder.AddField(name: "Message", value: $"{message}");
