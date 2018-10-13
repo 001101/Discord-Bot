@@ -18,7 +18,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseUrl>https://github.com/Human-Connection/Discord-Bot/blob/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl>https://www.dropbox.com/s/kw6byr3livo7dc3/hclogo.ico?dl=0</PackageIconUrl>
-    <Version>4.29.125</Version>
+    <Version>4.30.125</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

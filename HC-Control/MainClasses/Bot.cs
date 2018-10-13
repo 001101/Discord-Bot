@@ -653,7 +653,7 @@ namespace HC_Control.MainClasses
             else if (e.RolesBefore != e.RolesAfter)
             {
                 string type = "undefined";
-                DiscordRole changedRole;
+                DiscordRole changedRole = null;
                 if (e.RolesBefore.Count > e.RolesAfter.Count)
                 {
                     type = "removed";
