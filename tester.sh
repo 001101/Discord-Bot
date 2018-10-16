@@ -9,7 +9,7 @@ echo -e "[Webhook]: Sending webhook to Discord...\\n";
 echo -e "[Webhook]: Informing Testers...\\n";
 
 WEBHOOK_DATA='{
-  "username": $1,
+  "username": "Staging Release",
   "content": "!notify tester",
   "avatar_url": "https://cdn.discordapp.com/attachments/497572862467768320/500299505875288064/TECH_NEWS_ICON_1080x1080_FINAL.jpg"
 }'
