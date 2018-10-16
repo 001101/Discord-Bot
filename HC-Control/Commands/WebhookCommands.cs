@@ -8,13 +8,13 @@ namespace HC_Control.Commands
     class WebhookCommands : BaseCommandModule
     {
 
-        [Command("notifyt"), RequirePrefixes("!"), RequireGuild()]
-        public async Task Translate(CommandContext ctx, [RemainingText] string info = null)
+        [Command("notifyt"), RequirePrefixes("!")]
+        public async Task Notify(CommandContext ctx, string info, ulong gid, ulong cid)
         {
             DiscordGuild guild = ctx.Guild;
-            DiscordRole role = guild.GetRole(499915116826066944);
-            DiscordChannel chan = guild.GetChannel(499915455318982657);
-            await chan.SendMessageAsync($"Hello {role.Mention}. A new build seems to exsist. Please test!", false, null);
+            DiscordRole role = guild.GetRole(gid);
+            DiscordChannel chan = guild.GetChannel(cid);
+            await chan.SendMessageAsync($"Hello {role.Mention}. A new build seems to be on {info}. Please test!");
             await ctx.Message.DeleteAsync();
         }
     }

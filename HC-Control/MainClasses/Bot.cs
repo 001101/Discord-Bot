@@ -50,6 +50,7 @@ namespace HC_Control.MainClasses
             CNext.RegisterCommands<Commands.UserCommands>();
             CNext.RegisterCommands<Commands.AdminCommands>();
             CNext.RegisterCommands<Commands.OwnerCommands>();
+            CNext.RegisterCommands<Commands.WebhookCommands>();
             CNext.RegisterCommands<Config.UserConfig>();
             INext = Client.UseInteractivity(new InteractivityConfiguration { });
         }
